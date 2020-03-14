@@ -1,0 +1,39 @@
+
+.ui-pivot-totals {
+    font-weight: bold !important;
+    text-align: right !important;
+}
+
+.ui-pivot-totals_heading {
+    font-weight: bold !important;
+}
+
+.ui-pivot--row-heading{
+    vertical-align: top;
+    border: 1px solid var(--fd-color-neutral-2);
+    padding-left: 16px !important;
+}
+
+.ui-pivot--column-heading {
+    text-align: right !important;
+}
+
+.ui-pivot--cell{
+    text-align: right !important;
+}
+
+tr.ui-pivot--column-heading--sticky th {
+    background : white;
+    color : black;
+    position: sticky;
+    top: 0;
+}
+
+
+/*
+.ui-pivot--row {
+
+}
+
+
+*/
