@@ -3,8 +3,23 @@ module Internal.PivotView exposing (buildDataView)
 {-| Group and calculates values for display in a pivot.
 -}
 
-import Internal.PivotMatrix exposing (..)
-import Internal.PivotTypes exposing (..)
+import Internal.PivotMatrix exposing (buildColumnList)
+import Internal.PivotTypes
+    exposing
+        ( Config
+        , DataView
+        , GroupType(..)
+        , HGroup(..)
+        , KeyMap
+        , hgAdd
+        , hgAddTotal
+        , hgEmpty
+        , hgInsert
+        , hgMergeGet
+        , isColumn
+        , keyMapMeta
+        , newDataView
+        )
 
 
 buildDataView : Config a -> List a -> DataView

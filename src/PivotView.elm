@@ -75,7 +75,7 @@ import Dict
 import Html exposing (Attribute, Html, div, h2, table, tbody, td, text, th, thead, tr)
 import Html.Attributes exposing (class, colspan, rowspan, style)
 import Internal.PivotMatrix as Internal exposing (Cell(..), getContent, getRowCount, isFirstRow)
-import Internal.PivotTypes as Internal exposing (DataView, GroupType(..), HGroup(..), countLessOne)
+import Internal.PivotTypes as Internal exposing (GroupType(..), HGroup(..), countLessOne)
 import Internal.PivotView as Internal
 
 
@@ -94,6 +94,11 @@ type alias Config a =
     Internal.Config a
 
 
+{-| ViewConfig
+
+The view config is specific to the view and can be customized for your style sheets or needs.
+
+-}
 type alias ViewConfig msg =
     { showTotals : Bool
     , stickyHeading : Bool
@@ -107,6 +112,11 @@ type alias ViewConfig msg =
     }
 
 
+{-| Matrix
+
+The matrix contains all the rendered data required to generate the view. The matrix type is seperated to allow for prerendering in the update function.
+
+-}
 type alias Matrix a =
     { config : Config a
     , columns : List (List String)
@@ -115,6 +125,8 @@ type alias Matrix a =
     }
 
 
+{-| emptyMatrix
+-}
 emptyMatrix : Matrix a
 emptyMatrix =
     { config = newConfig [] [] (always 0)
@@ -124,6 +136,8 @@ emptyMatrix =
     }
 
 
+{-| newConfig
+-}
 newConfig : List (a -> String) -> List (a -> String) -> (a -> Float) -> Config a
 newConfig groupRows groupColumns values =
     { groupRows = groupRows
@@ -132,6 +146,8 @@ newConfig groupRows groupColumns values =
     }
 
 
+{-| defaultViewConfig
+-}
 defaultViewConfig : ViewConfig msg
 defaultViewConfig =
     { showTotals = False
@@ -146,6 +162,8 @@ defaultViewConfig =
     }
 
 
+{-| buildDataView
+-}
 buildDataView : Config a -> List a -> Matrix a
 buildDataView config data =
     let
@@ -159,61 +177,85 @@ buildDataView config data =
     }
 
 
+{-| defaultRowAttributes
+-}
 defaultRowAttributes : List (Attribute msg)
 defaultRowAttributes =
     []
 
 
+{-| defaultRowHeaderAttributes \_
+-}
 defaultRowHeaderAttributes : String -> List (Attribute msg)
 defaultRowHeaderAttributes _ =
     []
 
 
+{-| defaultValueCellAttributes \_
+-}
 defaultValueCellAttributes : Float -> List (Attribute msg)
 defaultValueCellAttributes _ =
     [ csCellValue ]
 
 
+{-| setRowHeaderTemplate val1 config
+-}
 setRowHeaderTemplate : (String -> Html msg) -> ViewConfig msg -> ViewConfig msg
 setRowHeaderTemplate val1 config =
     { config | rowHeaderTemplate = val1 }
 
 
+{-| setColumnHeaderTemplate val1 config
+-}
 setColumnHeaderTemplate : (String -> Html msg) -> ViewConfig msg -> ViewConfig msg
 setColumnHeaderTemplate val1 config =
     { config | columnHeaderTemplate = val1 }
 
 
+{-| setValueTemplate val1 config
+-}
 setValueTemplate : (Float -> Html msg) -> ViewConfig msg -> ViewConfig msg
 setValueTemplate val1 config =
     { config | valueTemplate = val1 }
 
 
+{-| setTotalsTemplate val1 config
+-}
 setTotalsTemplate : (Float -> Html msg) -> ViewConfig msg -> ViewConfig msg
 setTotalsTemplate val1 config =
     { config | totalsTemplate = val1 }
 
 
+{-| showTotals val1 config
+-}
 showTotals : Bool -> ViewConfig msg -> ViewConfig msg
 showTotals val1 config =
     { config | showTotals = val1 }
 
 
+{-| stickyHeading val1 config
+-}
 stickyHeading : Bool -> ViewConfig msg -> ViewConfig msg
 stickyHeading val1 config =
     { config | stickyHeading = val1 }
 
 
+{-| setRowAttributes val1 config
+-}
 setRowAttributes : List (Attribute msg) -> ViewConfig msg -> ViewConfig msg
 setRowAttributes val1 config =
     { config | rowAttributes = val1 }
 
 
+{-| setRowHeaderAttributes val1 config
+-}
 setRowHeaderAttributes : (String -> List (Attribute msg)) -> ViewConfig msg -> ViewConfig msg
 setRowHeaderAttributes val1 config =
     { config | rowHeaderAttributes = val1 }
 
 
+{-| setValueCellAttributes val1 config
+-}
 setValueCellAttributes : (Float -> List (Attribute msg)) -> ViewConfig msg -> ViewConfig msg
 setValueCellAttributes val1 config =
     { config | valueCellAttributes = val1 }
@@ -224,12 +266,15 @@ setValueCellAttributes val1 config =
 
 
 {-| render a pivot table from a list of records according to the config
+{-| view config viewConfig data -}
 -}
 view : Config a -> ViewConfig msg -> List a -> Html msg
 view config viewConfig data =
     render viewConfig (buildDataView config data)
 
 
+{-| render viewConfig matrix
+-}
 render : ViewConfig msg -> Matrix a -> Html msg
 render viewConfig matrix =
     let
@@ -257,16 +302,22 @@ render viewConfig matrix =
         ]
 
 
+{-| rowHeaderDefaultTemplate val1
+-}
 rowHeaderDefaultTemplate : String -> Html msg
 rowHeaderDefaultTemplate val1 =
     text val1
 
 
+{-| columnHeaderDefaultTemplate val1
+-}
 columnHeaderDefaultTemplate : String -> Html msg
 columnHeaderDefaultTemplate val1 =
     text val1
 
 
+{-| valueDefaultTemplate val1
+-}
 valueDefaultTemplate : Float -> Html msg
 valueDefaultTemplate val1 =
     text (String.fromFloat val1)
@@ -276,6 +327,8 @@ valueDefaultTemplate val1 =
 --# Helper Functions
 
 
+{-| renderColumnHeader attr countGroupRows columnList
+-}
 renderColumnHeader : List (Attribute msg) -> Int -> List (List String) -> Html msg
 renderColumnHeader attr countGroupRows columnList =
     let
@@ -293,6 +346,8 @@ renderColumnHeader attr countGroupRows columnList =
         (List.append list1 list2 |> List.map (\caption -> th [ csCellColumnHeader ] [ text caption ]))
 
 
+{-| renderTotals countGroupRows viewConfig columnList totals
+-}
 renderTotals : Int -> ViewConfig msg -> List (List String) -> HGroup -> Html msg
 renderTotals countGroupRows viewConfig columnList totals =
     List.filterMap
@@ -304,6 +359,8 @@ renderTotals countGroupRows viewConfig columnList totals =
         |> tr [ csRow ]
 
 
+{-| renderBody config matrix
+-}
 renderBody : ViewConfig msg -> List (List Cell) -> Html msg
 renderBody config matrix =
     tbody [ csBody ]
@@ -314,6 +371,8 @@ renderBody config matrix =
 --# Parts
 
 
+{-| renderCell config cell1
+-}
 renderCell : ViewConfig msg -> Cell -> Html msg
 renderCell config cell1 =
     let
@@ -332,6 +391,8 @@ renderCell config cell1 =
             td (config.valueCellAttributes val1) [ config.valueTemplate val1 ]
 
 
+{-| renderRow config row1
+-}
 renderRow : ViewConfig msg -> List Cell -> Html msg
 renderRow config row1 =
     tr config.rowAttributes (List.filter isFirstRow row1 |> List.map (renderCell config))
@@ -341,6 +402,8 @@ renderRow config row1 =
 -- Debug views
 
 
+{-| viewStructure config data
+-}
 viewStructure : Config a -> List a -> Html msg
 viewStructure config data =
     let
@@ -355,6 +418,8 @@ viewStructure config data =
         ]
 
 
+{-| viewPivotHGroup data
+-}
 viewPivotHGroup : HGroup -> List (Html msg)
 viewPivotHGroup data =
     case data of
@@ -375,6 +440,8 @@ viewPivotHGroup data =
             [ div [] [ text ("Value: " ++ String.fromFloat val) ] ]
 
 
+{-| indexType ix
+-}
 indexType : { m | indexType : GroupType } -> String
 indexType ix =
     case ix.indexType of
@@ -388,68 +455,68 @@ indexType ix =
             "GroupValues"
 
 
-optionalAttr : List ( Bool, Attribute msg ) -> List (Attribute msg)
-optionalAttr attr =
-    List.filterMap
-        (\( filter1, val1 ) ->
-            if filter1 then
-                Just val1
-
-            else
-                Nothing
-        )
-        attr
-
-
 
 --# Styles
 
 
+{-| csTable
+-}
 csTable : Attribute msg
 csTable =
     class "table"
 
 
+{-| csTableHeader
+-}
 csTableHeader : Attribute msg
 csTableHeader =
     class ""
 
 
+{-| csRow
+-}
 csRow : Attribute msg
 csRow =
     class ""
 
 
-csRowHeader : Attribute msg
-csRowHeader =
-    class "ui-pivot--row-heading"
-
-
+{-| csCellColumnHeader
+-}
 csCellColumnHeader : Attribute msg
 csCellColumnHeader =
     class "ui-pivot--column-heading"
 
 
+{-| csCellColumnHeaderSticky1
+-}
 csCellColumnHeaderSticky1 : Attribute msg
 csCellColumnHeaderSticky1 =
     class "ui-pivot--column-heading--sticky"
 
 
+{-| csCellValue
+-}
 csCellValue : Attribute msg
 csCellValue =
     class "ui-pivot--cell"
 
 
+{-| csCellTotal
+-}
 csCellTotal : Attribute msg
 csCellTotal =
     class "ui-pivot-totals"
 
 
+{-| csCellTotalHeading
+-}
 csCellTotalHeading : Attribute msg
 csCellTotalHeading =
     class "ui-pivot-totals_heading"
 
 
+{-| csBody
+-}
 csBody : Attribute msg
 csBody =
     class ""

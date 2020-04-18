@@ -168,13 +168,13 @@ countRows hGroup =
         case hGroup of
             HGIndex index ->
                 Dict.foldl
-                    (\key childHGroup total ->
+                    (\_ childHGroup total ->
                         countRows childHGroup + total
                     )
                     0
                     index.data
 
-            HGValue val ->
+            HGValue _ ->
                 1
 
 

@@ -129,7 +129,7 @@ indexGet key hgroup =
                 _ ->
                     hgEmpty
 
-        HGValue val ->
+        HGValue _ ->
             hgroup
 
 
@@ -163,7 +163,7 @@ hgInsert groupType key child target =
         HGIndex index ->
             HGIndex (indexInsert key child index)
 
-        HGValue val ->
+        HGValue _ ->
             HGIndex (indexInsert key child (newIndex groupType))
 
 
