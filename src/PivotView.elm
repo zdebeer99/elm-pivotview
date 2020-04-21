@@ -55,7 +55,7 @@ Currently this library only supports.
 
 # Example
 
-    import PivotView.ViewFiori as Pivot
+    import PivotView as Pivot
 
     view : State -> Html Msg
     view state =
