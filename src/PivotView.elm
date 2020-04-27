@@ -1,6 +1,6 @@
 module PivotView exposing
     ( view, render, ViewConfig
-    , Config, newConfig, buildDataView, Matrix
+    , Config, defaultConfig, buildDataView, Matrix
     , defaultViewConfig, defaultRowAttributes, defaultRowHeaderAttributes, defaultValueCellAttributes
     , setRowHeaderTemplate, setColumnHeaderTemplate, setValueTemplate, showTotals, setTotalsTemplate, setRowAttributes, setValueCellAttributes
     , setRowHeaderAttributes, stickyHeading
@@ -28,7 +28,7 @@ Currently this library only supports.
 
 # Config
 
-@docs Config, newConfig, buildDataView, Matrix
+@docs Config, defaultConfig, buildDataView, Matrix
 
 
 # View Config
@@ -63,7 +63,7 @@ Currently this library only supports.
 
     config : State -> P.Config SalesItem
     config state =
-        P.newConfig [ .grouping1 ] [ .colGrouping ] .value
+        P.defaultConfig [ .grouping1 ] [ .colGrouping ] .value
 
     viewConfig : P.ViewConfig Msg
     viewConfig =
@@ -129,17 +129,17 @@ type alias Matrix a =
 -}
 emptyMatrix : Matrix a
 emptyMatrix =
-    { config = newConfig [] [] (always 0)
+    { config = defaultConfig [] [] (always 0)
     , columns = []
     , totals = HGValue 0
     , body = []
     }
 
 
-{-| newConfig
+{-| defaultConfig
 -}
-newConfig : List (a -> String) -> List (a -> String) -> (a -> Float) -> Config a
-newConfig groupRows groupColumns values =
+defaultConfig : List (a -> String) -> List (a -> String) -> (a -> Float) -> Config a
+defaultConfig groupRows groupColumns values =
     { groupRows = groupRows
     , groupColumns = groupColumns
     , values = values
